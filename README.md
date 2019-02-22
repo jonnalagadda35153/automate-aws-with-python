@@ -11,3 +11,5 @@ Webotron currently hav the following Features
  - Lists buckets
  - Contents in a buckets
  - Create and setup bucket
+ - Synced contents on kitten web with s3
+ - Used python path library to have relative path of the Resource 

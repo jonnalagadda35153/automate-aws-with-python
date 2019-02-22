@@ -1,7 +1,10 @@
 # coding: utf-8
 import boto3
 from botocore.exceptions import ClientError
+from pathlib import Path
 import click
+import mimetypes
+
 print("Note: By default all the resources will be created in us-east-2 region")
 
 session = boto3.Session(profile_name = 'PythonAutomation')
@@ -75,6 +78,29 @@ def setup_bucket(bucket):
       }}
       )
     return
+
+def upload_file(s3_bucket, path, key):
+    content_tye = mimetypes.guess_type(key)[0] or 'text/plain'
+    s3_bucket.upload_file(
+        path,
+        key,
+        ExtraArgs={
+            'ContentType' : 'text/html'
+        })
+
+@cli.command('sync')
+@click.argument('pathname', type=click.Path(exists=True))
+@click.argument('bucket')
+def sync(pathname, bucket):
+    "Sync contents of Pathname to Bucket"
+    root = Path(pathname).expanduser().resolve()
+    s3_bucket = s3.Bucket(bucket)
+    def handle_directory(target):
+        for p in target.iterdir():
+            if p.is_dir(): handle_directory(p)
+            if p.is_file(): upload_file(s3_bucket,str(p), str(p.relative_to(root)))
+
+    handle_directory(root)
 
 if __name__ == '__main__':
     cli()
