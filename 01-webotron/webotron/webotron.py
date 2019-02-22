@@ -3,6 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 import click
 print("Note: By default all the resources will be created in us-east-2 region")
+
 session = boto3.Session(profile_name = 'PythonAutomation')
 s3 = session.resource('s3')
 
