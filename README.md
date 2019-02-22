@@ -10,3 +10,4 @@ and optionally configure route 53
 Webotron currently hav the following Features
  - Lists buckets
  - Contents in a buckets
+ - Create and setup bucket
