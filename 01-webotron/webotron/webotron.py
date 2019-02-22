@@ -1,9 +1,13 @@
 # coding: utf-8
+#!/usr/bin/python
+""" Webotron: Deploy websites with AWS.
+    Webtron automates the process of piublishing static websites to s3 froms scratch"""
+
 import boto3
-from botocore.exceptions import ClientError
-from pathlib import Path
 import click
 import mimetypes
+from botocore.exceptions import ClientError
+from pathlib import Path
 
 print("Note: By default all the resources will be created in us-east-2 region")
 
@@ -12,28 +16,31 @@ s3 = session.resource('s3')
 
 @click.group()
 def cli():
-    "Webotron deploys website to AWS"
+    """Webotron deploys website to AWS."""
     pass
+
 
 @cli.command('list_buckets')
 def list_buckets():
-    "List all buckcets"
+    """List all."""
     print("Following are the list of buckets from S3 with: ")
     for bucket in s3.buckets.all():
         print(bucket)
 
+
 @cli.command('list_bucket_obj')
 @click.argument('bucket')
 def list_bucket_obj(bucket):
-    "List objects in a s3 bucket"
+    """List objects in a s3 bucket."""
     print('Objects inside the %(buck)s bucket are: '%{'buck':bucket})
     for obj in s3.Bucket(bucket).objects.all():
         print(obj)
 
+
 @cli.command('setup_bucket')
 @click.argument('bucket')
 def setup_bucket(bucket):
-    "Creating a bucket"
+    """Create a bucket."""
     s3_bucket = None
     try:
         s3_bucket = s3.create_bucket(Bucket=bucket,
@@ -48,7 +55,7 @@ def setup_bucket(bucket):
         else:
             raise e
 
-    "Adding public policy to the bucket"
+    """Adding public policy to the bucket."""
     policy = """
        {
          "Version":"2012-10-17",
@@ -85,14 +92,15 @@ def upload_file(s3_bucket, path, key):
         path,
         key,
         ExtraArgs={
-            'ContentType' : 'text/html'
+            'ContentType' : content_type
         })
+
 
 @cli.command('sync')
 @click.argument('pathname', type=click.Path(exists=True))
 @click.argument('bucket')
 def sync(pathname, bucket):
-    "Sync contents of Pathname to Bucket"
+    """Sync contents of Pathname to Bucket."""
     root = Path(pathname).expanduser().resolve()
     s3_bucket = s3.Bucket(bucket)
     def handle_directory(target):
