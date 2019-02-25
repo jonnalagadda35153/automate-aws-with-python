@@ -12,19 +12,22 @@ import click
 import mimetypes
 from bucket import BucketManager
 
-
-
 print("Note: By default all the resources will be created in us-east-2 region")
 
-session = boto3.Session(profile_name = 'PythonAutomation')
-bucket_manager = BucketManager(session)
-#s3 = session.resource('s3')
+session = None
+bucker_manager = None
 
 @click.group()
-def cli():
+@click.option('--profile', default = None, help = "Use a AWS profile")
+def cli(profile):
     """Webotron deploys website to AWS."""
+    session_cfg = {}
+    if profile:
+        sesison_cfg['profile_name'] = profile
+    global session, bucket_manager
+    session = boto3.Session(**session_cfg)
+    bucket_manager = BucketManager(session)
     pass
-
 
 @cli.command('list_buckets')
 def list_buckets():
@@ -59,7 +62,6 @@ def sync(pathname, bucket):
     """Sync contents of Pathname to Bucket."""
     #s3_bucket = s3.Bucket(bucket)
     bucket_manager.sync(pathname,bucket)
-
 
 
 if __name__ == '__main__':
