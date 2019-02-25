@@ -1,4 +1,4 @@
-#!/usr/bin
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from botocore.exceptions import ClientError
 import boto3
@@ -7,25 +7,22 @@ from pathlib import Path
 from botocore.exceptions import ClientError
 
 class BucketManager:
-    """Manages as S3 Buckets."""
+    """Manage as S3 Buckets."""
 
     def __init__(self, session):
-        """Creates a BucketManager Object."""
+        """Create a BucketManager Object."""
         self.s3 = session.resource('s3')
 
-
     def all_buckets(self):
-        """Returns all buckets of an account."""
+        """Return all buckets of an account."""
         return self.s3.buckets.all()
 
-
     def all_objects(self,bucket):
-        """Returns all objects inside a bucket"""
+        """Return all objects inside a bucket."""
         return self.s3.Bucket(bucket).objects.all()
 
-
     def init_bucket(self,bucket_name):
-        """Creates a bucket/ if exists throws error"""
+        """Create a bucket/ if exists throws error."""
         s3_bucket = None
         try:
             s3_bucket = self.s3.create_bucket(
@@ -65,7 +62,7 @@ class BucketManager:
         buc_pol.put(Policy = policy)
 
     def configure_website(self,bucket):
-        "Performing website hosting"
+        """Perform website hosting."""
         ws = bucket.Website()
         ws.put(WebsiteConfiguration = {
         'ErrorDocument':{
@@ -78,6 +75,7 @@ class BucketManager:
 
     @staticmethod
     def upload_file(bucket, path, key):
+        """Uplod file to S3 bucket_manager."""
         content_type = mimetypes.guess_type(key)[0] or 'text/plain'
         return bucket.upload_file(
             path,
@@ -87,6 +85,7 @@ class BucketManager:
             })
 
     def sync(self, pathname, bucket_name):
+        """Sync contents in local machine to that in s3 bucket."""
         bucket = self.s3.Bucket(bucket_name)
         root = Path(pathname).expanduser().resolve()
         def handle_directory(target):
