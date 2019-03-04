@@ -3,8 +3,10 @@
 from botocore.exceptions import ClientError
 import boto3
 import mimetypes
+import util
 from pathlib import Path
 from botocore.exceptions import ClientError
+#from webotron import util
 
 class BucketManager:
     """Manage as S3 Buckets."""
@@ -12,6 +14,16 @@ class BucketManager:
     def __init__(self, session):
         """Create a BucketManager Object."""
         self.s3 = session.resource('s3')
+
+    def get_region_name(self,bucket):
+        """Get the region of the bucket."""
+        bucket_location = self.s3.meta.client.get_bucket_location(Bucket = bucket.name)
+
+        return bucket_location["LocationConstraint"] or 'us-east-1'
+
+    def get_bucket_url(self, bucket):
+        """Get the bucket URL for this bucket."""
+        return "http://{}.{}".format(bucket.name, util.get_endpoint(self.get_region_name(bucket)).host)
 
     def all_buckets(self):
         """Return all buckets of an account."""
