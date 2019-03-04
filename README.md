@@ -14,3 +14,5 @@ Webotron currently hav the following Features
  - Synced contents on kitten web with s3
  - Used python path library to have relative path of the Resource
  - Made session as a variable, so that user can pass any account name with --profile=<ProfileName>
+ - Updated the code to display the bucket URL after syncing
+ - Added new functionality to upload files which are only changed since last commit or updated the code
