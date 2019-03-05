@@ -16,6 +16,7 @@ print("Note: By default all the resources will be created in us-east-2 region")
 
 session = None
 bucker_manager = None
+client = boto3.client('s3')
 
 @click.group()
 @click.option('--profile', default = None, help = "Use a AWS profile")
@@ -55,12 +56,19 @@ def setup_bucket(bucket):
     bucket_manager.configure_website(s3_bucket)
     return
 
+@cli.command('delete_bucket')
+@click.argument('bucket')
+def delete_bucket(bucket):
+    """Deletes a bucket."""
+    bucket_manager.delete_bucket(bucket)
+    #response = client.delete_bucket(Bucket = bucket)
+
+
 @cli.command('sync')
 @click.argument('pathname', type=click.Path(exists=True))
 @click.argument('bucket')
 def sync(pathname, bucket):
     """Sync contents of Pathname to Bucket."""
-    #s3_bucket = s3.Bucket(bucket)
     bucket_manager.sync(pathname,bucket)
     print(bucket_manager.get_bucket_url(bucket_manager.s3.Bucket(bucket)))
 

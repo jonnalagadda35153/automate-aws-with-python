@@ -19,6 +19,7 @@ class BucketManager:
         """Create a BucketManager Object."""
         self.session = session
         self.s3 = session.resource('s3')
+        self.client = session.client('s3')
         self.transfer_config = boto3.s3.transfer.TransferConfig(
             multipart_chunksize = self.CHUNK_SIZE,
             multipart_threshold = self.CHUNK_SIZE
@@ -95,6 +96,21 @@ class BucketManager:
             'Suffix':'index.html'
           }}
           )
+
+    def delete_bucket(self,bucket):
+        """Code snippet to delete a bucket."""
+        try:
+            s3_buck = self.s3.Bucket(bucket)
+            s3_buck.objects.all().delete()
+            print("Deleting contents from the bucket {}".format(bucket))
+            response = self.client.delete_bucket(Bucket = bucket)
+            print("Bucket {} is deleted ".format(bucket))
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'NoSuchBucket':
+                print('Bucket %s is already deleted by you or never created ' % bucket )
+            else:
+                raise error
+
 
     def load_manifest(self,bucket):
         """Load manifest to upload only updated file since last commit."""

@@ -16,3 +16,4 @@ Webotron currently hav the following Features
  - Made session as a variable, so that user can pass any account name with --profile=<ProfileName>
  - Updated the code to display the bucket URL after syncing
  - Added new functionality to upload files which are only changed since last commit or updated the code
+ - Added delete bucket feature script 
