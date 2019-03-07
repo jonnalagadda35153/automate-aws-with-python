@@ -24,7 +24,7 @@ def cli(profile):
     """Webotron deploys website to AWS."""
     session_cfg = {}
     if profile:
-        sesison_cfg['profile_name'] = profile
+        session_cfg['profile_name'] = profile
     global session, bucket_manager
     session = boto3.Session(**session_cfg)
     bucket_manager = BucketManager(session)
